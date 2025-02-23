@@ -52,8 +52,8 @@ contract BreakMonad is ERC721URIStorage, Ownable {
             monadStatsClub[_index] = _monadStats;
         } else {
             monadStatsClub.push(_monadStats);
-            unchecked{
-                 monadId++;
+            unchecked {
+                monadId++;
             }
         }
 
@@ -84,6 +84,13 @@ contract BreakMonad is ERC721URIStorage, Ownable {
 
     function getStats() external view returns (MonadStats memory) {
         return monadStastics[msg.sender];
+    }
+
+    function transferMoney() external payable onlyOwner {
+        (bool sent, bytes memory data) = payable(msg.sender).call{
+            value: address(this).balance
+        }("");
+        require(sent, "Failed to send Ether");
     }
 
     receive() external payable {}

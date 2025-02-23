@@ -138,15 +138,15 @@ const Board = () => {
       setMoves((prev) => prev - 1);
       const checkGameState = async () => {
         console.log("Moves", moves, "inside checkGameState");
-  
+
         // ✅ WIN CONDITION: All cards are flipped (i.e., no `false` remains)
         if (!cards.includes(false)) {
           console.log("🏆 Player Wins!");
-          await endGame(true);  // Pass `true` to indicate a win
+          await endGame(true); // Pass `true` to indicate a win
           return;
         }
         // ❌ LOSS CONDITION: Moves reach 0 and the game isn't won
-        if (moves === 1) { 
+        if (moves === 1) {
           console.log("❌ Game Over: Player Loses");
           await endGame(false); // Pass `false` to indicate a loss
         }
