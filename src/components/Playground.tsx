@@ -1,9 +1,21 @@
 "use client";
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
+import Leaderboard from "./Leaderboard";
+import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
+import { useAccount, useBalance } from "wagmi";
+import { useRouter } from "next/navigation";
+import { useDataContext } from "@/context/DataContext";
 const randomSort = () => Math.random() - 0.5;
 
-const Card = ({ value, active, onClick }) => {
+interface CardProps {
+  value: string;
+  url: string;
+  active: boolean;
+  onClick: () => void;
+}
+
+const Card = ({ value, url, active, onClick }: CardProps) => {
   return (
     <button
       className={`Card ${active ? "active overflow-hidden" : ""}`}
@@ -11,11 +23,12 @@ const Card = ({ value, active, onClick }) => {
       disabled={active}
     >
       {active && (
-        <img
-          className=""
-          src="https://img-cdn.magiceden.dev/autoquality:none/rs:fill:1600:0:0/plain/https%3A%2F%2Fbafybeibotdfgn6lfbtuefbi3nu7i67lqw3intugvs2g6aot25lckzolxnm.ipfs.w3s.link%2F0.png"
-          width="100%"
-          height="100%"
+        <Image
+          src={url}
+          width={100}
+          height={100}
+          className="w-full h-full"
+          alt={value}
         />
       )}
     </button>
@@ -23,69 +36,186 @@ const Card = ({ value, active, onClick }) => {
 };
 
 const Board = () => {
+  const { address } = useAccount();
+  const { ready, authenticated, user: privyUser } = usePrivy();
+  const disableLogin = !ready || (ready && authenticated);
+  const router = useRouter();
+  const { login } = useLogin({
+    onComplete: () => {
+      router.push("/");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const { logout } = useLogout({
+    onSuccess: () => {
+      router.push("/");
+    },
+  });
+  const { data, isError, isLoading } = useBalance({
+    address,
+  });
+
+  console.log(data);
   const initialValues = [
-    "noto:bird",
-    "noto:blossom",
-    "noto:cactus",
-    "noto:avocado",
-    "noto:cookie",
-    "noto:crystal-ball",
-    "noto:peach",
-    "noto:gorilla",
+    {
+      url: "https://pbs.twimg.com/media/GkKqj2CW4AA8xwF?format=jpg&name=large",
+      value: "card1",
+    },
+    {
+      url: "https://pbs.twimg.com/media/GkW0WHCXIAAhNXH?format=jpg&name=900x900",
+      value: "card2",
+    },
+    {
+      url: "https://pbs.twimg.com/media/Gj6X8ODW4AA9zJR?format=jpg&name=medium",
+      value: "card3",
+    },
+    {
+      url: "https://pbs.twimg.com/media/Gjn83UfWsAAFjsw?format=jpg&name=large",
+      value: "card4",
+    },
+    {
+      url: "https://pbs.twimg.com/media/GjmKKVYWEAAySYN?format=jpg&name=large",
+      value: "card5",
+    },
+    {
+      url: "https://pbs.twimg.com/media/Ge7gFEsXgAAu77_?format=jpg&name=900x900",
+      value: "card6",
+    },
+    {
+      url: "https://pbs.twimg.com/media/GetB4UiWYAAEP4_?format=jpg&name=900x900",
+      value: "card7",
+    },
+    {
+      url: "https://pbs.twimg.com/media/GkJ4sOpWMAAacmi?format=jpg&name=large",
+      value: "card8",
+    },
   ];
 
-  const shuffledValues = [...initialValues, ...initialValues].sort(randomSort);
+  // Ensure shuffledValues is computed only once on mount
+  const shuffledValues = useMemo(
+    () => [...initialValues, ...initialValues].sort(randomSort),
+    []
+  );
 
-  const [cards, setCards] = useState(Array(16).fill(false));
-  const [selected, setSelected] = useState([]);
+  const [cards, setCards] = useState<boolean[]>(Array(16).fill(false));
+  const [selected, setSelected] = useState<number[]>([]);
   const [hits, setHits] = useState(0);
 
-  const handleClick = (index) => {
-    if (selected.length === 2) {
-      return;
-    }
+  const handleClick = (index: number) => {
+    if (selected.length === 2 || selected.includes(index)) return;
 
     const newCards = [...cards];
     newCards[index] = true;
-    const newSelected = [...selected, index];
     setCards(newCards);
-    setSelected(newSelected);
+    setSelected([...selected, index]);
   };
 
   useEffect(() => {
     if (selected.length === 2) {
       const [first, second] = selected;
-      if (shuffledValues[first] !== shuffledValues[second]) {
+      if (shuffledValues[first].value !== shuffledValues[second].value) {
         setTimeout(() => {
-          const newCards = [...cards];
-          newCards[first] = false;
-          newCards[second] = false;
-          setCards(newCards);
+          setCards((prev) => {
+            const newCards = [...prev];
+            newCards[first] = false;
+            newCards[second] = false;
+            return newCards;
+          });
         }, 1000);
       }
-      setHits(hits + 1);
+      setHits((prev) => prev + 1);
       setSelected([]);
     }
-  }, [selected, shuffledValues, cards, hits]);
+  }, [selected, shuffledValues]);
 
   return (
     <div className="orbitron-font mx-auto h-[100vh] flex">
-      <div className="w-[25%]  border-4 m-4"></div>
-      <div className="w-[50%] flex justify-center items-center flex-col space-y-8">
-        <h1 className="font-bold text-pretty text-4xl">Monad Matching</h1>
+      <div className="w-[20%] bg-[#fefae0] border-4 border-white rounded-md p-6 flex flex-col">
+        <h1 className="font-bold text-pretty text-xl uppercase text-center">
+          Monad Matchers
+        </h1>
+        <div className="flex flex-col p-2 mt-10">
+          <h3 className="font-bold text-pretty text-xl uppercase">Stats</h3>
+          <div className="flex justify-between mt-4 font-semibold">
+            <p className="text-pretty text-md">Winnings</p>
+            <p className="text-pretty text-md">32 🟢</p>
+          </div>
+          <div className="flex justify-between mt-4 font-semibold">
+            <p className="text-pretty text-md">Losses</p>
+            <p className="text-pretty text-md">6 🔴</p>
+          </div>
+          <div className="flex justify-between mt-4 font-semibold">
+            <p className="text-pretty text-md">Balance</p>
+            <p className="text-pretty text-md">2.3 MON</p>
+          </div>
+          <div className="flex justify-between mt-4 font-semibold">
+            <p className="text-pretty text-md">Points</p>
+            <p className="text-pretty text-md">23 XP</p>
+          </div>
+          <h3 className="font-bold text-pretty text-xl uppercase mt-8">Wallet-Stats</h3>
+          <div className="flex justify-between mt-4 font-semibold">
+            <p className="text-pretty text-xs">Address</p>
+            <p className="text-pretty text-xs">
+              {privyUser?.wallet
+                ? privyUser?.wallet?.address.slice(0, 6) +
+                  "..." +
+                  privyUser?.wallet?.address.slice(-4)
+                : "xxxx"}
+            </p>
+          </div>
+
+          
+          <div className="flex justify-between mt-4 font-semibold">
+            <p className="text-pretty text-xs">Balance</p>
+            <p className="text-pretty text-xs">
+              {data?.formatted} {data?.symbol}
+            </p>
+          </div>
+
+          {disableLogin ? (
+            <div className="flex flex-col justify-between mt-10 font-semibold">
+              <button
+                onClick={logout}
+                className="bg-blue-500 cursor-pointer text-white px-4 py-2 rounded-md text-xs"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col justify-between mt-20 font-semibold">
+              <button
+                disabled={disableLogin}
+                onClick={login}
+                className="bg-blue-500 cursor-pointer text-white px-4 py-2 rounded-md text-xs"
+              >
+                Connect Wallet
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="w-[40%] flex bg-[#fefae0] justify-center items-center flex-col space-y-8">
         <div className="Board mt-8">
           {cards.map((active, index) => (
             <Card
               key={index}
-              value={shuffledValues[index]}
+              value={shuffledValues[index].value}
+              url={shuffledValues[index].url}
               active={active}
               onClick={() => handleClick(index)}
             />
           ))}
+          <p className="text-2xl font-bold mt-2 text-black w-full block">
+            Hits: {hits}
+          </p>
         </div>
-        <p className="text-4xl">Hits: {hits}</p>
       </div>
-      <div className="w-[25%] border-4 m-4"></div>
+      <div className="w-[40%] rounded-md border-4 border-white bg-[#fefae0] flex flex-col text-center p-4 space-y-4">
+        <Leaderboard />
+      </div>
     </div>
   );
 };

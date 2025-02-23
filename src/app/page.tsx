@@ -1,8 +1,47 @@
+"use client";
 import Board from "@/components/Playground";
+import { WagmiConfig } from "wagmi";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
+import { PrivyProvider } from "@privy-io/react-auth";
+import DataContextProvider from "@/context/DataContext";
+import  ToastContainer  from "react-hot-toast";
+import { wagmiConfig } from "@/utils/wallet-utils";
+const queryClient = new QueryClient();
+
 export default function Home() {
   return (
-    <div className=" border border-black">
-      <Board />
-    </div>
+    <>
+      <WagmiConfig config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider>
+            <PrivyProvider
+              appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID!}
+              config={{
+                // Customize Privy's appearance in your app
+                appearance: {
+                  theme: "light",
+                  accentColor: "#676FFF",
+                  logo: "https://docs.privy.io/privy-logo-dark.png",
+                },
+                // Create embedded wallets for users who don't have a wallet
+                embeddedWallets: {
+                  createOnLogin: "all-users",
+                },
+              }}
+            >
+              <DataContextProvider>
+                <div className=" border border-black">
+                  <Board />
+                </div>
+              </DataContextProvider>
+            </PrivyProvider>
+          </RainbowKitProvider>
+        </QueryClientProvider>
+        <ToastContainer />
+      </WagmiConfig>
+      );
+    </>
   );
 }
