@@ -1,5 +1,5 @@
 import React from "react";
-
+import numeral from "numeral";
 const Leaderboard = () => {
   const players = [
     { rank: 1, name: "Neeraj Choubisa", score: 1500 },
@@ -12,8 +12,6 @@ const Leaderboard = () => {
     { rank: 8, name: "Bob Smith", score: 1350 },
     { rank: 9, name: "Charlie Brown", score: 1280 },
     { rank: 10, name: "David Wilson", score: 1200 },
-    
-
   ];
 
   return (
@@ -37,7 +35,9 @@ const Leaderboard = () => {
             >
               <td className="py-2 px-4">{player.rank}</td>
               <td className="py-2 px-4 font-medium">{player.name}</td>
-              <td className="py-2 px-4 text-right font-semibold">{player.score} XP</td>
+              <td className="py-2 px-4 text-right font-semibold">
+                {numeral(player.score).format("0.0a")} XP
+              </td>
             </tr>
           ))}
         </tbody>

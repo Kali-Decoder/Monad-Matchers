@@ -22,7 +22,7 @@ export const connectors = connectorsForWallets(
     },
   ],
   {
-    appName: "XO-Market",
+    appName: "Monad Matchers",
     projectId: projectId,
   }
 );

@@ -6,6 +6,7 @@ import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { useAccount, useBalance } from "wagmi";
 import { useRouter } from "next/navigation";
 import { useDataContext } from "@/context/DataContext";
+import numeral from "numeral"
 const randomSort = () => Math.random() - 0.5;
 
 interface CardProps {
@@ -37,6 +38,14 @@ const Card = ({ value, url, active, onClick }: CardProps) => {
 
 const Board = () => {
   const { address } = useAccount();
+  const {
+    personalStats,
+    startGame,
+    isPlayEnable,
+    setMoves,
+    moves,
+    setPlayEnable,
+  } = useDataContext();
   const { ready, authenticated, user: privyUser } = usePrivy();
   const disableLogin = !ready || (ready && authenticated);
   const router = useRouter();
@@ -102,7 +111,6 @@ const Board = () => {
 
   const [cards, setCards] = useState<boolean[]>(Array(16).fill(false));
   const [selected, setSelected] = useState<number[]>([]);
-  const [hits, setHits] = useState(0);
 
   const handleClick = (index: number) => {
     if (selected.length === 2 || selected.includes(index)) return;
@@ -126,7 +134,13 @@ const Board = () => {
           });
         }, 1000);
       }
-      setHits((prev) => prev + 1);
+      setMoves((prev) => prev - 1);
+      if (moves === 0) {
+        alert("Game Over");
+        setCards(Array(16).fill(false));
+        setMoves(15);
+        return;
+      }
       setSelected([]);
     }
   }, [selected, shuffledValues]);
@@ -141,21 +155,27 @@ const Board = () => {
           <h3 className="font-bold text-pretty text-xl uppercase">Stats</h3>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Winnings</p>
-            <p className="text-pretty text-md">32 🟢</p>
+            <p className="text-pretty text-md">{numeral(personalStats?.totalWins).format('0.0a')} 🟢</p>
           </div>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Losses</p>
-            <p className="text-pretty text-md">6 🔴</p>
+            <p className="text-pretty text-md">
+              {numeral(personalStats?.totalLosses).format('0.0a')} 🔴
+            </p>
           </div>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Balance</p>
-            <p className="text-pretty text-md">2.3 MON</p>
+            <p className="text-pretty text-md">{numeral(data?.formatted).format('0.0a')} MON</p>
           </div>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Points</p>
-            <p className="text-pretty text-md">23 XP</p>
+            <p className="text-pretty text-md">
+              {numeral(personalStats?.totalPoints).format('0.0a')} XP
+            </p>
           </div>
-          <h3 className="font-bold text-pretty text-xl uppercase mt-8">Wallet-Stats</h3>
+          <h3 className="font-bold text-pretty text-xl uppercase mt-8">
+            Wallet-Stats
+          </h3>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-xs">Address</p>
             <p className="text-pretty text-xs">
@@ -167,29 +187,21 @@ const Board = () => {
             </p>
           </div>
 
-          
-          <div className="flex justify-between mt-4 font-semibold">
-            <p className="text-pretty text-xs">Balance</p>
-            <p className="text-pretty text-xs">
-              {data?.formatted} {data?.symbol}
-            </p>
-          </div>
-
           {disableLogin ? (
-            <div className="flex flex-col justify-between mt-10 font-semibold">
+            <div className="flex flex-col justify-between mt-4 font-semibold">
               <button
                 onClick={logout}
-                className="bg-blue-500 cursor-pointer text-white px-4 py-2 rounded-md text-xs"
+                className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-xs"
               >
                 Logout
               </button>
             </div>
           ) : (
-            <div className="flex flex-col justify-between mt-20 font-semibold">
+            <div className="flex flex-col justify-between mt-4 font-semibold">
               <button
                 disabled={disableLogin}
                 onClick={login}
-                className="bg-blue-500 cursor-pointer text-white px-4 py-2 rounded-md text-xs"
+                className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-xs"
               >
                 Connect Wallet
               </button>
@@ -198,20 +210,52 @@ const Board = () => {
         </div>
       </div>
       <div className="w-[40%] flex bg-[#fefae0] justify-center items-center flex-col space-y-8">
-        <div className="Board mt-8">
-          {cards.map((active, index) => (
-            <Card
-              key={index}
-              value={shuffledValues[index].value}
-              url={shuffledValues[index].url}
-              active={active}
-              onClick={() => handleClick(index)}
-            />
-          ))}
-          <p className="text-2xl font-bold mt-2 text-black w-full block">
-            Hits: {hits}
+        {!isPlayEnable && <>
+          <h1 className="font-bold text-pretty text-2xl uppercase text-center">
+            Monad Matchers
+          </h1>
+          <p className="text-pretty text-lg text-center uppercase">
+            Click on the cards to <br/> find the matching pairs
           </p>
-        </div>
+          <button
+            onClick={async () => {
+              await startGame();
+            }}
+            className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-xs"
+          >
+            Start Game
+          </button>
+        </>}
+        {isPlayEnable && (
+          <div className="flex justify-between w-[100%] px-6">
+            <p className="text-2xl font-bold mt-2 text-black block">
+              Moves: {moves}
+            </p>
+            <button
+              onClick={async () => {
+                await startGame();
+              }}
+              className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-xs"
+            >
+              Restart
+            </button>
+          </div>
+        )}
+        {isPlayEnable && (
+          <>
+            <div className="Board mt-8">
+              {cards.map((active, index) => (
+                <Card
+                  key={index}
+                  value={shuffledValues[index].value}
+                  url={shuffledValues[index].url}
+                  active={active}
+                  onClick={() => handleClick(index)}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
       <div className="w-[40%] rounded-md border-4 border-white bg-[#fefae0] flex flex-col text-center p-4 space-y-4">
         <Leaderboard />

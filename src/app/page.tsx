@@ -8,9 +8,9 @@ import { PrivyProvider } from "@privy-io/react-auth";
 import DataContextProvider from "@/context/DataContext";
 import  ToastContainer  from "react-hot-toast";
 import { wagmiConfig } from "@/utils/wallet-utils";
-const queryClient = new QueryClient();
 
 export default function Home() {
+  const queryClient = new QueryClient();
   return (
     <>
       <WagmiConfig config={wagmiConfig}>
@@ -35,11 +35,11 @@ export default function Home() {
                 <div className=" border border-black">
                   <Board />
                 </div>
+                <ToastContainer />
               </DataContextProvider>
             </PrivyProvider>
           </RainbowKitProvider>
         </QueryClientProvider>
-        <ToastContainer />
       </WagmiConfig>
       );
     </>
