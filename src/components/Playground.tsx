@@ -6,7 +6,7 @@ import { useLogin, usePrivy, useLogout } from "@privy-io/react-auth";
 import { useAccount, useBalance } from "wagmi";
 import { useRouter } from "next/navigation";
 import { useDataContext } from "@/context/DataContext";
-import numeral from "numeral"
+import numeral from "numeral";
 const randomSort = () => Math.random() - 0.5;
 
 interface CardProps {
@@ -45,7 +45,7 @@ const Board = () => {
     setMoves,
     moves,
     setPlayEnable,
-    endGame
+    endGame,
   } = useDataContext();
   const { ready, authenticated, user: privyUser } = usePrivy();
   const disableLogin = !ready || (ready && authenticated);
@@ -114,8 +114,7 @@ const Board = () => {
   const [selected, setSelected] = useState<number[]>([]);
 
   const handleClick = (index: number) => {
-    if (selected.length === 2 || selected.includes(index)) return;
-
+    if (!moves || selected.length === 2 || selected.includes(index)) return;
     const newCards = [...cards];
     newCards[index] = true;
     setCards(newCards);
@@ -125,6 +124,7 @@ const Board = () => {
   useEffect(() => {
     if (selected.length === 2) {
       const [first, second] = selected;
+
       if (shuffledValues[first].value !== shuffledValues[second].value) {
         setTimeout(() => {
           setCards((prev) => {
@@ -136,15 +136,31 @@ const Board = () => {
         }, 1000);
       }
       setMoves((prev) => prev - 1);
-      if (moves === 0) {
-        alert("Game Over");
-        setCards(Array(16).fill(false));
-        
-        return;
-      }
+      const checkGameState = async () => {
+        console.log("Moves", moves, "inside checkGameState");
+  
+        // ✅ WIN CONDITION: All cards are flipped (i.e., no `false` remains)
+        if (!cards.includes(false)) {
+          console.log("🏆 Player Wins!");
+          await endGame(true);  // Pass `true` to indicate a win
+          return;
+        }
+        // ❌ LOSS CONDITION: Moves reach 0 and the game isn't won
+        if (moves === 1) { 
+          console.log("❌ Game Over: Player Loses");
+          await endGame(false); // Pass `false` to indicate a loss
+        }
+      };
+      checkGameState();
       setSelected([]);
     }
   }, [selected, shuffledValues]);
+
+  const resetPlay = async () => {
+    setCards(Array(16).fill(false));
+    setSelected([]);
+    await startGame();
+  };
 
   return (
     <div className="orbitron-font mx-auto h-[100vh] flex">
@@ -156,22 +172,26 @@ const Board = () => {
           <h3 className="font-bold text-pretty text-xl uppercase">Stats</h3>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Winnings</p>
-            <p className="text-pretty text-md">{numeral(personalStats?.totalWins).format('0.0a')} 🟢</p>
+            <p className="text-pretty text-md">
+              {numeral(personalStats?.totalWins).format("0.0a")} 🟢
+            </p>
           </div>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Losses</p>
             <p className="text-pretty text-md">
-              {numeral(personalStats?.totalLosses).format('0.0a')} 🔴
+              {numeral(personalStats?.totalLosses).format("0.0a")} 🔴
             </p>
           </div>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Balance</p>
-            <p className="text-pretty text-md">{numeral(data?.formatted).format('0.0a')} MON</p>
+            <p className="text-pretty text-md">
+              {numeral(data?.formatted).format("0.0a")} MON
+            </p>
           </div>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Points</p>
             <p className="text-pretty text-md">
-              {numeral(personalStats?.totalPoints).format('0.0a')} XP
+              {numeral(personalStats?.totalPoints).format("0.0a")} XP
             </p>
           </div>
           <h3 className="font-bold text-pretty text-xl uppercase mt-8">
@@ -211,26 +231,13 @@ const Board = () => {
         </div>
       </div>
       <div className="w-[40%] flex bg-[#fefae0] justify-center items-center flex-col space-y-8">
-        {!isPlayEnable && <>
-          <h1 className="font-bold text-pretty text-2xl uppercase text-center">
-            Monad Matchers
-          </h1>
-          <p className="text-pretty text-lg text-center uppercase">
-            Click on the cards to <br/> find the matching pairs
-          </p>
-          <button
-            onClick={async () => {
-              await startGame();
-            }}
-            className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-xs"
-          >
-            Start Game
-          </button>
-        </>}
-        {isPlayEnable && (
-          <div className="flex justify-between w-[100%] px-6">
-            <p className="text-2xl font-bold mt-2 text-black block">
-              Moves: {moves}
+        {!isPlayEnable && (
+          <>
+            <h1 className="font-bold text-pretty text-2xl uppercase text-center">
+              Monad Matchers
+            </h1>
+            <p className="text-pretty text-lg text-center uppercase">
+              Click on the cards to <br /> find the matching pairs
             </p>
             <button
               onClick={async () => {
@@ -238,8 +245,27 @@ const Board = () => {
               }}
               className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-xs"
             >
-              Restart
+              Start Game
             </button>
+          </>
+        )}
+        {isPlayEnable && (
+          <div className="flex justify-between w-[100%] px-6">
+            <p className="text-2xl font-bold mt-2 text-black block">
+              Moves: {moves}
+            </p>
+            {moves === 0 && (
+              <>
+                <button
+                  onClick={async () => {
+                    await resetPlay();
+                  }}
+                  className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-xs"
+                >
+                  Restart
+                </button>
+              </>
+            )}
           </div>
         )}
         {isPlayEnable && (

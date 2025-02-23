@@ -46,7 +46,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
     totalLosses: 0,
     totalPoints: 0,
   });
-  const [isPlayEnable, setPlayEnable] = useState(false);
+  const [isPlayEnable, setPlayEnable] = useState(true);
   const [moves, setMoves] = useState(0);
   useEffect(() => {
     setActiveChainId(chain);
@@ -124,7 +124,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
           from: wallet.address,
         });
         await tx.wait();
-        setPlayEnable(false);
+        await getStats();
         toast.success("Game ended successfully", { id });
       }
     } catch (error) {
