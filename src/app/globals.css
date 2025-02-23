@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Press+Start+2P&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+* {
+  margin: 0;
+  padding: 0;
+}
+.orbitron-font {
+  font-family: "Orbitron", serif;
+  font-optical-sizing: auto;
+}
+body {
+  height: 100vh;
+  background-image: linear-gradient(45deg, #457b9d, #a8dadc);
+}
+.Board {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 120px 120px 120px 120px;
+  column-gap: 10px;
+  row-gap: 10px;
+  margin: auto;
+}
+.Card {
+  height: 120px;
+  background: #1d3557;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.active:disabled {
+  background: #f1faee;
+  .iconify {
+    display: inline;
+  }
+}
