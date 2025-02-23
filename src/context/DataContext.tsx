@@ -14,10 +14,11 @@ interface DataContextProps {
     totalPoints: number;
   };
   startGame: () => void;
-  isPlayEnable:boolean;
-  setPlayEnable:(val:boolean)=>void;
-  moves:number;
-  setMoves:(val:number)=>void;
+  isPlayEnable: boolean;
+  setPlayEnable: (val: boolean) => void;
+  moves: number;
+  setMoves: (val: number) => void;
+  endGame: (isWin: boolean) => void;
 }
 
 interface DataContextProviderProps {
@@ -35,22 +36,23 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
   const { address } = useAccount();
   const chain = useChainId();
   console.log("Chain", chain);
-  // const WIN_URI =
-  //   "https://gateway.pinata.cloud/ipfs/bafkreiav7nrjmzaiywauf7vfjjormnl3hzi25qeljfehqgt2fqshftrl2i";
-  // const LSS_URI =
-  //   "https://gateway.pinata.cloud/ipfs/bafkreibfdgafgoyodb53xk6epovsv4244gnqjafxwtk3e2p6gzduvinci4";
+  const WIN_URI =
+    "https://gateway.pinata.cloud/ipfs/bafkreiav7nrjmzaiywauf7vfjjormnl3hzi25qeljfehqgt2fqshftrl2i";
+  const LOSS_URI =
+    "https://gateway.pinata.cloud/ipfs/bafkreibfdgafgoyodb53xk6epovsv4244gnqjafxwtk3e2p6gzduvinci4";
   const [activeChain, setActiveChainId] = useState<number | undefined>(chain);
   const [personalStats, setPersonalStats] = useState<any>({
     totalWins: 0,
     totalLosses: 0,
     totalPoints: 0,
   });
-  const [isPlayEnable,setPlayEnable] = useState(false);
+  const [isPlayEnable, setPlayEnable] = useState(false);
   const [moves, setMoves] = useState(0);
   useEffect(() => {
     setActiveChainId(chain);
   }, [chain]);
   const signer = useEthersSigner({ chainId: activeChain });
+
   const getContractInstance = async (
     contractAddress: string,
     contractAbi: any
@@ -87,11 +89,47 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         await tx.wait();
         setPlayEnable(true);
         setMoves(15);
-        toast.success("Game started successfully",{id});
+        toast.success("Game started successfully", { id });
       }
     } catch (error) {
       console.log("Error", error);
-      toast.error("Error in starting game",{id});
+      toast.error("Error in starting game", { id });
+    }
+  };
+
+  const endGame = async (isWin: boolean) => {
+    const id = toast.loading("Ending game...");
+    try {
+      if (!activeChain) {
+        console.log("Chain not found");
+        return;
+      }
+      const provider = new ethers.providers.JsonRpcProvider({
+        url: process.env.NEXT_PUBLIC_RPC_URL,
+        skipFetchSetup: true,
+      });
+      const wallet = new ethers.Wallet(
+        process.env.NEXT_PUBLIC_PRIVATE_KEY!,
+        provider
+      );
+      const signer = wallet.connect(provider);
+      const contract = new ethers.Contract(
+        "0x7AD1a4b60c8C265a951459B4888354D1339c3cDa",
+        MainContractABI,
+        signer
+      );
+      if (contract) {
+        let tokenUri = isWin ? WIN_URI : LOSS_URI;
+        const tx = await contract.endGame(isWin, tokenUri, address, {
+          from: wallet.address,
+        });
+        await tx.wait();
+        setPlayEnable(false);
+        toast.success("Game ended successfully", { id });
+      }
+    } catch (error) {
+      console.log("Error", error);
+      toast.error("Error in ending game", { id });
     }
   };
   const getStats = async () => {
@@ -139,7 +177,18 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
   }
 
   return (
-    <DataContext.Provider value={{ isPlayEnable,startGame,personalStats, formatTimestamp,setMoves,moves,setPlayEnable }}>
+    <DataContext.Provider
+      value={{
+        endGame,
+        isPlayEnable,
+        startGame,
+        personalStats,
+        formatTimestamp,
+        setMoves,
+        moves,
+        setPlayEnable,
+      }}
+    >
       {children}
     </DataContext.Provider>
   );

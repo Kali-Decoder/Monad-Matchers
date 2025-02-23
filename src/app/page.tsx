@@ -6,7 +6,7 @@ import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { PrivyProvider } from "@privy-io/react-auth";
 import DataContextProvider from "@/context/DataContext";
-import  ToastContainer  from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { wagmiConfig } from "@/utils/wallet-utils";
 
 export default function Home() {
@@ -35,10 +35,10 @@ export default function Home() {
                 <div className=" border border-black">
                   <Board />
                 </div>
-                <ToastContainer />
               </DataContextProvider>
             </PrivyProvider>
           </RainbowKitProvider>
+          <Toaster />
         </QueryClientProvider>
       </WagmiConfig>
       );

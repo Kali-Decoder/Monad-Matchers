@@ -45,6 +45,7 @@ const Board = () => {
     setMoves,
     moves,
     setPlayEnable,
+    endGame
   } = useDataContext();
   const { ready, authenticated, user: privyUser } = usePrivy();
   const disableLogin = !ready || (ready && authenticated);
@@ -138,7 +139,7 @@ const Board = () => {
       if (moves === 0) {
         alert("Game Over");
         setCards(Array(16).fill(false));
-        setMoves(15);
+        
         return;
       }
       setSelected([]);
