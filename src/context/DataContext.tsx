@@ -46,7 +46,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
     totalLosses: 0,
     totalPoints: 0,
   });
-  const [isPlayEnable, setPlayEnable] = useState(true);
+  const [isPlayEnable, setPlayEnable] = useState(false);
   const [moves, setMoves] = useState(0);
   useEffect(() => {
     setActiveChainId(chain);
