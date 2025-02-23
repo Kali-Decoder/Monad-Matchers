@@ -19,6 +19,7 @@ interface DataContextProps {
   moves: number;
   setMoves: (val: number) => void;
   endGame: (isWin: boolean) => void;
+  leaderBoardData: any[];
 }
 
 interface DataContextProviderProps {
@@ -41,6 +42,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
   const LOSS_URI =
     "https://gateway.pinata.cloud/ipfs/bafkreibfdgafgoyodb53xk6epovsv4244gnqjafxwtk3e2p6gzduvinci4";
   const [activeChain, setActiveChainId] = useState<number | undefined>(chain);
+  const [leaderBoardData, setLeaderBoardData] = useState<any[]>([]);
   const [personalStats, setPersonalStats] = useState<any>({
     totalWins: 0,
     totalLosses: 0,
@@ -132,6 +134,37 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
       toast.error("Error in ending game", { id });
     }
   };
+  const getMonadStatsClub = async()=>{
+    if (!activeChain) {
+      console.log("Chain not found");
+      return;
+    }
+    try {
+      const contract = await getContractInstance(
+        Addresses[activeChain].mainContractAddress,
+        MainContractABI
+      );
+      if (contract) {
+        const stats = await contract.getClubStats({ from: address });
+        const length = stats.length;
+        let leaderBoard = [];
+        // we have to arrange in ascending order with totalPoints 
+        for (let i = 0; i < length; i++) {
+          leaderBoard.push({
+            totalPoints: +stats[i].points.toString(),
+            totalWins: +stats[i].winnings.toString(),
+            totalLosses: +stats[i].losses.toString(),
+            user: stats[i].user,
+          });
+        }
+        leaderBoard.sort((a, b) => b.totalPoints - a.totalPoints);
+        setLeaderBoardData(leaderBoard);
+       
+      }
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }
   const getStats = async () => {
     try {
       if (!activeChain) {
@@ -165,6 +198,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
   useEffect(() => {
     if (!signer) return;
     getStats();
+    getMonadStatsClub();
   }, [signer, address, activeChain]);
 
   function formatTimestamp(timestamp: number) {
@@ -187,6 +221,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         setMoves,
         moves,
         setPlayEnable,
+        leaderBoardData
       }}
     >
       {children}

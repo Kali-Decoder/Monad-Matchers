@@ -1,18 +1,8 @@
 import React from "react";
 import numeral from "numeral";
+import { useDataContext } from "@/context/DataContext";
 const Leaderboard = () => {
-  const players = [
-    { rank: 1, name: "Neeraj Choubisa", score: 1500 },
-    { rank: 2, name: "Alice Johnson", score: 1400 },
-    { rank: 3, name: "Bob Smith", score: 1350 },
-    { rank: 4, name: "Charlie Brown", score: 1280 },
-    { rank: 5, name: "David Wilson", score: 1200 },
-    { rank: 6, name: "Neeraj Choubisa", score: 1500 },
-    { rank: 7, name: "Alice Johnson", score: 1400 },
-    { rank: 8, name: "Bob Smith", score: 1350 },
-    { rank: 9, name: "Charlie Brown", score: 1280 },
-    { rank: 10, name: "David Wilson", score: 1200 },
-  ];
+  const { leaderBoardData } = useDataContext();
 
   return (
     <div className="mx-auto w-full p-6">
@@ -26,20 +16,32 @@ const Leaderboard = () => {
           </tr>
         </thead>
         <tbody>
-          {players.map((player, index) => (
-            <tr
-              key={index}
-              className={`border-b ${
-                player.rank === 1 ? "bg-yellow-100" : "bg-white"
-              }`}
-            >
-              <td className="py-2 px-4">{player.rank}</td>
-              <td className="py-2 px-4 font-medium">{player.name}</td>
-              <td className="py-2 px-4 text-right font-semibold">
-                {numeral(player.score).format("0.0a")} XP
-              </td>
-            </tr>
-          ))}
+          {leaderBoardData &&
+            leaderBoardData.map((player, index) => (
+              <tr
+                key={index}
+                className={`border-b ${
+                  index === 0 ? "bg-yellow-100" : "bg-white"
+                }`}
+              >
+                <td className="py-2 px-4">{index + 1}</td>
+                <td className="py-2 px-4 font-medium">
+                  {player?.user.slice(0, 5) + "..." + player?.user.slice(-5)}
+                </td>
+                <td className="py-2 px-4 text-right font-semibold">
+                  {numeral(player.totalPoints).format("0.0a")} XP
+                </td>
+              </tr>
+            ))}
+
+            {!leaderBoardData && (
+                <tr>
+                    <td colSpan={3} className="text-center text-black py-4">
+                    Loading...
+                    </td>
+                </tr>
+                )}
+
         </tbody>
       </table>
     </div>
