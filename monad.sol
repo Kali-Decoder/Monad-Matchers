@@ -20,7 +20,6 @@ contract BreakMonad is ERC721URIStorage, Ownable {
         uint256 winnings;
         address user;
     }
-
     constructor(string memory _collectionName, string memory _collectionSymbol)
         Ownable(msg.sender)
         ERC721(_collectionName, _collectionSymbol)
@@ -91,6 +90,10 @@ contract BreakMonad is ERC721URIStorage, Ownable {
             value: address(this).balance
         }("");
         require(sent, "Failed to send Ether");
+    }
+
+    function getMonadStatsClub() view external returns(MonadStats[] memory){
+        return monadStatsClub;
     }
 
     receive() external payable {}

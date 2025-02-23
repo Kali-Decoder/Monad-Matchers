@@ -84,7 +84,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
       if (contract) {
         const tx = await contract.playGame({
           from: address,
-          value: ethers.utils.parseEther("0.000000000005"),
+          value: ethers.utils.parseEther("0.0005"),
         });
         await tx.wait();
         setPlayEnable(true);
