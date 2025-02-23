@@ -114,7 +114,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
       );
       const signer = wallet.connect(provider);
       const contract = new ethers.Contract(
-        "0x7AD1a4b60c8C265a951459B4888354D1339c3cDa",
+        "0xce6c79EA7C4cE0DC5d6863ACb0cBEABc27C351b6",
         MainContractABI,
         signer
       );
