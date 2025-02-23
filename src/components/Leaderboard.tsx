@@ -34,10 +34,10 @@ const Leaderboard = () => {
               </tr>
             ))}
 
-            {!leaderBoardData && (
+            {!leaderBoardData?.length && (
                 <tr>
-                    <td colSpan={3} className="text-center text-black py-4">
-                    Loading...
+                    <td colSpan={3} className="text-center text-red-500 uppercase font-semibold py-4">
+                    No data available
                     </td>
                 </tr>
                 )}

@@ -53,8 +53,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
   useEffect(() => {
     setActiveChainId(chain);
   }, [chain]);
-  const signer = useEthersSigner({ chainId: activeChain });
-
+  const signer = useEthersSigner({ chainId: chain });
   const getContractInstance = async (
     contractAddress: string,
     contractAbi: any
@@ -145,7 +144,8 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         MainContractABI
       );
       if (contract) {
-        const stats = await contract.getClubStats({ from: address });
+        console.log("Calling array" );
+        const stats = await contract.getMonadStatsClub();
         const length = stats.length;
         let leaderBoard = [];
         // we have to arrange in ascending order with totalPoints 
@@ -199,7 +199,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
     if (!signer) return;
     getStats();
     getMonadStatsClub();
-  }, [signer, address, activeChain]);
+  }, [signer, address, chain]);
 
   function formatTimestamp(timestamp: number) {
     const date = new Date(timestamp * 1000); // Convert to milliseconds
