@@ -182,7 +182,7 @@ const Board = () => {
           Monad Matchers
         </h1>
         <div className="flex flex-col p-2 mt-10">
-          <h3 className="font-bold text-pretty text-xl uppercase">Stats</h3>
+          <h3 className="font-bold text-pretty text-xl uppercase">Your Stats</h3>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Winnings</p>
             <p className="text-pretty text-md">
@@ -207,14 +207,12 @@ const Board = () => {
               {numeral(personalStats?.totalPoints).format("0.0a")} XP
             </p>
           </div>
-          <h3 className="font-bold text-pretty text-xl uppercase mt-8">
-            Wallet-Stats
-          </h3>
+        
           <div className="flex justify-between mt-4 font-semibold">
-            <p className="text-pretty text-xs">Address</p>
-            <p className="text-pretty text-xs">
+            <p className="text-pretty text-md">Address</p>
+            <p className="text-pretty text-md">
               {privyUser?.wallet
-                ? privyUser?.wallet?.address.slice(0, 6) +
+                ? privyUser?.wallet?.address.slice(0, 4) +
                   "..." +
                   privyUser?.wallet?.address.slice(-4)
                 : "xxxx"}
@@ -225,7 +223,7 @@ const Board = () => {
             <div className="flex flex-col justify-between mt-4 font-semibold">
               <button
                 onClick={logout}
-                className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-xs"
+                className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-md"
               >
                 Logout
               </button>
@@ -241,7 +239,7 @@ const Board = () => {
               <button
                 disabled={disableLogin}
                 onClick={login}
-                className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-xs"
+                className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-md"
               >
                 Connect Wallet
               </button>
@@ -262,7 +260,7 @@ const Board = () => {
               onClick={async () => {
                 await startGame();
               }}
-              className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-xs"
+              className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-md"
             >
               Start Game
             </button>

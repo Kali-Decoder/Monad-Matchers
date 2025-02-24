@@ -1,9 +1,10 @@
 import React from "react";
 import numeral from "numeral";
 import { useDataContext } from "@/context/DataContext";
+import { useAccount } from "wagmi";
 const Leaderboard = () => {
   const { leaderBoardData } = useDataContext();
-
+  const { address } = useAccount();
   return (
     <div className="mx-auto w-full p-6 h-[100vh]  overflow-scroll ">
       <h2 className="text-2xl font-bold text-center mb-4">🏆 Leaderboard</h2>
@@ -22,9 +23,18 @@ const Leaderboard = () => {
                 key={index}
                 className={`border-b ${
                   index === 0 ? "bg-yellow-100" : "bg-white"
-                }`}
+                } ${address == player?.user ? "bg-blue-400" : "bg-white"}`}
               >
-                <td className="py-2 px-4">{index + 1}</td>
+                <td className="py-2 px-4">
+                  {index + 1}{" "}
+                  {index + 1 == 1 ? (
+                    <span className="text-xl">🏆</span>
+                  ) : index + 1 == 2 ? (
+                    <span className="text-2xl">🥈</span>
+                  ) : index + 1 == 3 ? (
+                    <span className="text-2xl">🥉</span>
+                  ) : null}{" "}
+                </td>
                 <td className="py-2 px-4 font-medium">
                   {player?.user.slice(0, 5) + "..." + player?.user.slice(-5)}
                 </td>
