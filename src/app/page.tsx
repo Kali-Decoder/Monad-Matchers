@@ -32,7 +32,7 @@ export default function Home() {
               }}
             >
               <DataContextProvider>
-                <div className=" border border-black">
+                <div className="overflow-hidden h-[100vh] w-[100vw]">
                   <Board />
                 </div>
               </DataContextProvider>

@@ -5,7 +5,7 @@ const Leaderboard = () => {
   const { leaderBoardData } = useDataContext();
 
   return (
-    <div className="mx-auto w-full p-6">
+    <div className="mx-auto w-full p-6 h-[100vh]  overflow-scroll ">
       <h2 className="text-2xl font-bold text-center mb-4">🏆 Leaderboard</h2>
       <table className="w-full border-collapse">
         <thead>
@@ -34,14 +34,16 @@ const Leaderboard = () => {
               </tr>
             ))}
 
-            {!leaderBoardData?.length && (
-                <tr>
-                    <td colSpan={3} className="text-center text-red-500 uppercase font-semibold py-4">
-                    No data available
-                    </td>
-                </tr>
-                )}
-
+          {!leaderBoardData?.length && (
+            <tr>
+              <td
+                colSpan={3}
+                className="text-center text-red-500 uppercase font-semibold py-4"
+              >
+                No data available
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

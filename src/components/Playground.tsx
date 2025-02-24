@@ -58,6 +58,7 @@ const Board = () => {
   } = useDataContext();
   const { ready, authenticated, user: privyUser } = usePrivy();
   const disableLogin = !ready || (ready && authenticated);
+  const [finalMsg, setFinalMsg] = useState<string>("");
   const router = useRouter();
   const { login } = useLogin({
     onComplete: () => {
@@ -150,6 +151,7 @@ const Board = () => {
 
         // ✅ WIN CONDITION: All cards are flipped (i.e., no `false` remains)
         if (!cards.includes(false)) {
+          setFinalMsg("🏆 Player Wins!");
           console.log("🏆 Player Wins!");
           await endGame(true); // Pass `true` to indicate a win
           return;
@@ -157,6 +159,7 @@ const Board = () => {
         // ❌ LOSS CONDITION: Moves reach 0 and the game isn't won
         if (moves === 1) {
           console.log("❌ Game Over: Player Loses");
+          setFinalMsg("❌ Game Over: Player Loses");
           await endGame(false); // Pass `false` to indicate a loss
         }
       };
@@ -169,6 +172,7 @@ const Board = () => {
     setCards(Array(16).fill(false));
     setSelected([]);
     await startGame();
+    setFinalMsg("");
   };
 
   return (
@@ -216,7 +220,7 @@ const Board = () => {
                 : "xxxx"}
             </p>
           </div>
-       
+
           {disableLogin ? (
             <div className="flex flex-col justify-between mt-4 font-semibold">
               <button
@@ -231,7 +235,6 @@ const Board = () => {
               >
                 End
               </button> */}
-           
             </div>
           ) : (
             <div className="flex flex-col justify-between mt-4 font-semibold">
@@ -266,27 +269,34 @@ const Board = () => {
           </>
         )}
         {isPlayEnable && (
-          <div className="flex justify-between w-[100%] px-6">
-            <p className="text-2xl font-bold mt-2 text-black block">
-              Moves: {moves}
-            </p>
-            {moves === 0 && (
-              <>
-                <button
-                  onClick={async () => {
-                    await resetPlay();
-                  }}
-                  className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-xs"
-                >
-                  Restart
-                </button>
-              </>
-            )}
-          </div>
+          <>
+            <div className="flex justify-between w-[100%] px-6">
+              <p className="text-2xl font-bold mt-2 text-black block">
+                You Have {moves} Left
+              </p>
+              {moves === 0 && (
+                <>
+                  <button
+                    onClick={async () => {
+                      await resetPlay();
+                    }}
+                    className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-xs"
+                  >
+                    Restart
+                  </button>
+                </>
+              )}
+            </div>
+            <div className="mt-4 flex text-center items-center justify-center">
+              <p className="text-2xl font-bold mt-2 text-black ">
+                {finalMsg}
+              </p>
+            </div>
+          </>
         )}
         {isPlayEnable && (
           <>
-            <div className="Board mt-8">
+            <div className="Board mt-8 border-4">
               {cards.map((active, index) => (
                 <Card
                   key={index}
