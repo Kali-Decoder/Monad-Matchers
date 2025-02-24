@@ -10,7 +10,7 @@ contract BreakMonad is ERC721URIStorage, Ownable {
     uint256 public monadId;
     using SafeMath for uint256;
     mapping(address => MonadStats) private monadStastics;
-    uint256 public immutable ENTRY_FEE = 50000 wei;
+    uint256 public immutable ENTRY_FEE = 500000000000000 wei;
     uint256 public immutable WIN_POINT = 10;
     uint256 public immutable LOSS_POINT = 5;
     MonadStats[] private monadStatsClub;
@@ -27,6 +27,12 @@ contract BreakMonad is ERC721URIStorage, Ownable {
 
     function playGame() external payable {
         require(msg.value >= ENTRY_FEE, "INSUFFICIENT_FUNDS");
+        monadStastics[msg.sender] = MonadStats({
+            points:0,
+            losses:0,
+            winnings:0,
+            user:msg.sender
+        });
     }
 
     function endGame(

@@ -105,6 +105,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         console.log("Chain not found");
         return;
       }
+      console.log("Ending game",Addresses[activeChain].mainContractAddress);
       const provider = new ethers.providers.JsonRpcProvider({
         url: process.env.NEXT_PUBLIC_RPC_URL,
         skipFetchSetup: true,
@@ -126,6 +127,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         });
         await tx.wait();
         await getStats();
+        await getMonadStatsClub();
         toast.success("Game ended successfully", { id });
       }
     } catch (error) {
@@ -133,7 +135,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
       toast.error("Error in ending game", { id });
     }
   };
-  const getMonadStatsClub = async()=>{
+  const getMonadStatsClub = async () => {
     if (!activeChain) {
       console.log("Chain not found");
       return;
@@ -144,11 +146,11 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         MainContractABI
       );
       if (contract) {
-        console.log("Calling array" );
+        console.log("Calling array");
         const stats = await contract.getMonadStatsClub();
         const length = stats.length;
         let leaderBoard = [];
-        // we have to arrange in ascending order with totalPoints 
+        // we have to arrange in ascending order with totalPoints
         for (let i = 0; i < length; i++) {
           leaderBoard.push({
             totalPoints: +stats[i].points.toString(),
@@ -159,20 +161,16 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         }
         leaderBoard.sort((a, b) => b.totalPoints - a.totalPoints);
         setLeaderBoardData(leaderBoard);
-       
+        console.log("LeaderBoard", leaderBoard);
       }
     } catch (error) {
       console.log("Error", error);
     }
-  }
+  };
   const getStats = async () => {
     try {
-      if (!activeChain) {
-        console.log("Chain not found");
-        return;
-      }
       const contract = await getContractInstance(
-        Addresses[activeChain].mainContractAddress,
+        Addresses[chain].mainContractAddress,
         MainContractABI
       );
       let obj = {
@@ -181,7 +179,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         totalPoints: 0,
       };
       if (contract) {
-        const stats = await contract.getStats({ from: address });
+        const stats = await contract.getStats();
         obj = {
           totalWins: +stats[2].toString(),
           totalLosses: +stats[1].toString(),
@@ -221,7 +219,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         setMoves,
         moves,
         setPlayEnable,
-        leaderBoardData
+        leaderBoardData,
       }}
     >
       {children}

@@ -216,6 +216,7 @@ const Board = () => {
               >
                 Logout
               </button>
+           
             </div>
           ) : (
             <div className="flex flex-col justify-between mt-4 font-semibold">
