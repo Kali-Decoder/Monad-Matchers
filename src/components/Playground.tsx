@@ -182,7 +182,9 @@ const Board = () => {
           Monad Matchers
         </h1>
         <div className="flex flex-col p-2 mt-10">
-          <h3 className="font-bold text-pretty text-xl uppercase">Your Stats</h3>
+          <h3 className="font-bold text-pretty text-xl uppercase">
+            Your Stats
+          </h3>
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Winnings</p>
             <p className="text-pretty text-md">
@@ -207,7 +209,7 @@ const Board = () => {
               {numeral(personalStats?.totalPoints).format("0.0a")} XP
             </p>
           </div>
-        
+
           <div className="flex justify-between mt-4 font-semibold">
             <p className="text-pretty text-md">Address</p>
             <p className="text-pretty text-md">
@@ -245,6 +247,25 @@ const Board = () => {
               </button>
             </div>
           )}
+         <h3 className="font-bold text-pretty text-xl uppercase mt-20">
+            History
+          </h3>
+          <div className="grid grid-cols-8 gap-3 mt-4">
+
+            {Array.from({ length: personalStats?.totalWins }).map((_, index) => (
+              <div
+                key={`win-${index}`}
+                className="w-5 h-5 bg-green-500 cursor-pointer rounded-full"
+              ></div>
+            ))}
+       
+            {Array.from({ length: personalStats?.totalLosses }).map((_, index) => (
+              <div
+                key={`loss-${index}`}
+                className="w-5 h-5 bg-red-500 cursor-pointer rounded-full"
+              ></div>
+            ))}
+          </div>
         </div>
       </div>
       <div className="w-[40%] flex bg-[#fefae0] justify-center items-center flex-col space-y-8">
@@ -286,9 +307,7 @@ const Board = () => {
               )}
             </div>
             <div className="mt-4 flex text-center items-center justify-center">
-              <p className="text-2xl font-bold mt-2 text-black ">
-                {finalMsg}
-              </p>
+              <p className="text-2xl font-bold mt-2 text-black ">{finalMsg}</p>
             </div>
           </>
         )}
