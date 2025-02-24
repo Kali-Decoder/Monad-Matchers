@@ -105,7 +105,6 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         console.log("Chain not found");
         return;
       }
-      console.log("Ending game",Addresses[activeChain].mainContractAddress);
       const provider = new ethers.providers.JsonRpcProvider({
         url: process.env.NEXT_PUBLIC_RPC_URL,
         skipFetchSetup: true,

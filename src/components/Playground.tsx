@@ -216,6 +216,12 @@ const Board = () => {
               >
                 Logout
               </button>
+              {/* <button
+                onClick={async ()=> await endGame(false)}
+                className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-xs"
+              >
+                End
+              </button> */}
            
             </div>
           ) : (
