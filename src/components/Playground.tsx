@@ -270,6 +270,10 @@ const Board = () => {
                 )
               )}
             </div>
+            <footer className=" text-black font-bold text-center py-2 text-md mt-32">
+              Made by <span className="text-blue-700">@itsNikku876</span> for{" "} <br/>
+              <span className="text-black font-bold">◈ BREAK MONAD</span>
+            </footer>
           </div>
         </div>
         <div className="w-[40%] flex bg-[#fefae0] justify-center items-center flex-col space-y-8">
@@ -337,7 +341,6 @@ const Board = () => {
           <Leaderboard />
         </div>
       </div>
-    
     </>
   );
 };
