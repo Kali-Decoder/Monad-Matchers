@@ -7,6 +7,15 @@ import { useAccount, useBalance } from "wagmi";
 import { useRouter } from "next/navigation";
 import { useDataContext } from "@/context/DataContext";
 import numeral from "numeral";
+import card1 from "../../public/images/card1.jpeg";
+import card2 from "../../public/images/card2.jpeg";
+import card3 from "../../public/images/card3.jpeg";
+import card4 from "../../public/images/card4.jpeg";
+import card5 from "../../public/images/card5.jpeg";
+import card6 from "../../public/images/card6.jpeg";
+import card7 from "../../public/images/card7.jpeg";
+import card8 from "../../public/images/card8.jpeg";
+
 const randomSort = () => Math.random() - 0.5;
 
 interface CardProps {
@@ -71,35 +80,35 @@ const Board = () => {
   console.log(data);
   const initialValues = [
     {
-      url: "https://pbs.twimg.com/media/GkKqj2CW4AA8xwF?format=jpg&name=large",
+      url: card1,
       value: "card1",
     },
     {
-      url: "https://pbs.twimg.com/media/GkW0WHCXIAAhNXH?format=jpg&name=900x900",
+      url: card2,
       value: "card2",
     },
     {
-      url: "https://pbs.twimg.com/media/Gj6X8ODW4AA9zJR?format=jpg&name=medium",
+      url: card3,
       value: "card3",
     },
     {
-      url: "https://pbs.twimg.com/media/Gjn83UfWsAAFjsw?format=jpg&name=large",
+      url: card4,
       value: "card4",
     },
     {
-      url: "https://pbs.twimg.com/media/GjmKKVYWEAAySYN?format=jpg&name=large",
+      url: card5,
       value: "card5",
     },
     {
-      url: "https://pbs.twimg.com/media/Ge7gFEsXgAAu77_?format=jpg&name=900x900",
+      url: card6,
       value: "card6",
     },
     {
-      url: "https://pbs.twimg.com/media/GetB4UiWYAAEP4_?format=jpg&name=900x900",
+      url: card7,
       value: "card7",
     },
     {
-      url: "https://pbs.twimg.com/media/GkJ4sOpWMAAacmi?format=jpg&name=large",
+      url: card8,
       value: "card8",
     },
   ];
@@ -207,7 +216,7 @@ const Board = () => {
                 : "xxxx"}
             </p>
           </div>
-
+       
           {disableLogin ? (
             <div className="flex flex-col justify-between mt-4 font-semibold">
               <button
