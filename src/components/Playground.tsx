@@ -176,161 +176,169 @@ const Board = () => {
   };
 
   return (
-    <div className="orbitron-font mx-auto h-[100vh] flex">
-      <div className="w-[20%] bg-[#fefae0] border-4 border-white rounded-md p-6 flex flex-col">
-        <h1 className="font-bold text-pretty text-xl uppercase text-center">
-          Monad Matchers
-        </h1>
-        <div className="flex flex-col p-2 mt-10">
-          <h3 className="font-bold text-pretty text-xl uppercase">
-            Your Stats
-          </h3>
-          <div className="flex justify-between mt-4 font-semibold">
-            <p className="text-pretty text-md">Winnings</p>
-            <p className="text-pretty text-md">
-              {numeral(personalStats?.totalWins).format("0.0a")} 🟢
-            </p>
-          </div>
-          <div className="flex justify-between mt-4 font-semibold">
-            <p className="text-pretty text-md">Losses</p>
-            <p className="text-pretty text-md">
-              {numeral(personalStats?.totalLosses).format("0.0a")} 🔴
-            </p>
-          </div>
-          <div className="flex justify-between mt-4 font-semibold">
-            <p className="text-pretty text-md">Balance</p>
-            <p className="text-pretty text-md">
-              {numeral(data?.formatted).format("0.0a")} MON
-            </p>
-          </div>
-          <div className="flex justify-between mt-4 font-semibold">
-            <p className="text-pretty text-md">Points</p>
-            <p className="text-pretty text-md">
-              {numeral(personalStats?.totalPoints).format("0.0a")} XP
-            </p>
-          </div>
+    <>
+      <div className="orbitron-font mx-auto h-[100vh] flex">
+        <div className="w-[20%] bg-[#fefae0] border-4 border-white rounded-md p-6 flex flex-col">
+          <h1 className="font-bold text-pretty text-xl uppercase text-center">
+            Monad Matchers
+          </h1>
+          <div className="flex flex-col p-2 mt-10">
+            <h3 className="font-bold text-pretty text-xl uppercase">
+              Your Stats
+            </h3>
+            <div className="flex justify-between mt-4 font-semibold">
+              <p className="text-pretty text-md">Winnings</p>
+              <p className="text-pretty text-md">
+                {numeral(personalStats?.totalWins).format("0.0a")} 🟢
+              </p>
+            </div>
+            <div className="flex justify-between mt-4 font-semibold">
+              <p className="text-pretty text-md">Losses</p>
+              <p className="text-pretty text-md">
+                {numeral(personalStats?.totalLosses).format("0.0a")} 🔴
+              </p>
+            </div>
+            <div className="flex justify-between mt-4 font-semibold">
+              <p className="text-pretty text-md">Balance</p>
+              <p className="text-pretty text-md">
+                {numeral(data?.formatted).format("0.0a")} MON
+              </p>
+            </div>
+            <div className="flex justify-between mt-4 font-semibold">
+              <p className="text-pretty text-md">Points</p>
+              <p className="text-pretty text-md">
+                {numeral(personalStats?.totalPoints).format("0.0a")} XP
+              </p>
+            </div>
 
-          <div className="flex justify-between mt-4 font-semibold">
-            <p className="text-pretty text-md">Address</p>
-            <p className="text-pretty text-md">
-              {privyUser?.wallet
-                ? privyUser?.wallet?.address.slice(0, 4) +
-                  "..." +
-                  privyUser?.wallet?.address.slice(-4)
-                : "xxxx"}
-            </p>
-          </div>
+            <div className="flex justify-between mt-4 font-semibold">
+              <p className="text-pretty text-md">Address</p>
+              <p className="text-pretty text-md">
+                {privyUser?.wallet
+                  ? privyUser?.wallet?.address.slice(0, 4) +
+                    "..." +
+                    privyUser?.wallet?.address.slice(-4)
+                  : "xxxx"}
+              </p>
+            </div>
 
-          {disableLogin ? (
-            <div className="flex flex-col justify-between mt-4 font-semibold">
-              <button
-                onClick={logout}
-                className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-md"
-              >
-                Logout
-              </button>
-              {/* <button
+            {disableLogin ? (
+              <div className="flex flex-col justify-between mt-4 font-semibold">
+                <button
+                  onClick={logout}
+                  className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-md"
+                >
+                  Logout
+                </button>
+                {/* <button
                 onClick={async ()=> await endGame(false)}
                 className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-xs"
               >
                 End
               </button> */}
-            </div>
-          ) : (
-            <div className="flex flex-col justify-between mt-4 font-semibold">
-              <button
-                disabled={disableLogin}
-                onClick={login}
-                className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-md"
-              >
-                Connect Wallet
-              </button>
-            </div>
-          )}
-         <h3 className="font-bold text-pretty text-xl uppercase mt-20">
-            History
-          </h3>
-          <div className="grid grid-cols-8 gap-3 mt-4">
+              </div>
+            ) : (
+              <div className="flex flex-col justify-between mt-4 font-semibold">
+                <button
+                  disabled={disableLogin}
+                  onClick={login}
+                  className="bg-blue-500 cursor-pointer text-white px-2 py-1 rounded-md text-md"
+                >
+                  Connect Wallet
+                </button>
+              </div>
+            )}
+            <h3 className="font-bold text-pretty text-xl uppercase mt-20">
+              History
+            </h3>
+            <div className="grid grid-cols-8 gap-3 mt-4">
+              {Array.from({ length: personalStats?.totalWins }).map(
+                (_, index) => (
+                  <div
+                    key={`win-${index}`}
+                    className="w-5 h-5 bg-green-500 cursor-pointer rounded-full"
+                  ></div>
+                )
+              )}
 
-            {Array.from({ length: personalStats?.totalWins }).map((_, index) => (
-              <div
-                key={`win-${index}`}
-                className="w-5 h-5 bg-green-500 cursor-pointer rounded-full"
-              ></div>
-            ))}
-       
-            {Array.from({ length: personalStats?.totalLosses }).map((_, index) => (
-              <div
-                key={`loss-${index}`}
-                className="w-5 h-5 bg-red-500 cursor-pointer rounded-full"
-              ></div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="w-[40%] flex bg-[#fefae0] justify-center items-center flex-col space-y-8">
-        {!isPlayEnable && (
-          <>
-            <h1 className="font-bold text-pretty text-2xl uppercase text-center">
-              Monad Matchers
-            </h1>
-            <p className="text-pretty text-lg text-center uppercase">
-              Click on the cards to <br /> find the matching pairs
-            </p>
-            <button
-              onClick={async () => {
-                await startGame();
-              }}
-              className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-md"
-            >
-              Start Game
-            </button>
-          </>
-        )}
-        {isPlayEnable && (
-          <>
-            <div className="flex justify-between w-[100%] px-6">
-              <p className="text-2xl font-bold mt-2 text-black block">
-                You Have {moves} Left
-              </p>
-              {moves === 0 && (
-                <>
-                  <button
-                    onClick={async () => {
-                      await resetPlay();
-                    }}
-                    className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-xs"
-                  >
-                    Restart
-                  </button>
-                </>
+              {Array.from({ length: personalStats?.totalLosses }).map(
+                (_, index) => (
+                  <div
+                    key={`loss-${index}`}
+                    className="w-5 h-5 bg-red-500 cursor-pointer rounded-full"
+                  ></div>
+                )
               )}
             </div>
-            <div className="mt-4 flex text-center items-center justify-center">
-              <p className="text-2xl font-bold mt-2 text-black ">{finalMsg}</p>
-            </div>
-          </>
-        )}
-        {isPlayEnable && (
-          <>
-            <div className="Board mt-8 border-4">
-              {cards.map((active, index) => (
-                <Card
-                  key={index}
-                  value={shuffledValues[index].value}
-                  url={shuffledValues[index].url}
-                  active={active}
-                  onClick={() => handleClick(index)}
-                />
-              ))}
-            </div>
-          </>
-        )}
+          </div>
+        </div>
+        <div className="w-[40%] flex bg-[#fefae0] justify-center items-center flex-col space-y-8">
+          {!isPlayEnable && (
+            <>
+              <h1 className="font-bold text-pretty text-2xl uppercase text-center">
+                Monad Matchers
+              </h1>
+              <p className="text-pretty text-lg text-center uppercase">
+                Click on the cards to <br /> find the matching pairs
+              </p>
+              <button
+                onClick={async () => {
+                  await startGame();
+                }}
+                className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-md"
+              >
+                Start Game
+              </button>
+            </>
+          )}
+          {isPlayEnable && (
+            <>
+              <div className="flex justify-between w-[100%] px-6">
+                <p className="text-2xl font-bold mt-2 text-black block">
+                  You Have {moves} Left
+                </p>
+                {moves === 0 && (
+                  <>
+                    <button
+                      onClick={async () => {
+                        await resetPlay();
+                      }}
+                      className="bg-blue-500 font-bold cursor-pointer text-white px-2 py-1 rounded-md text-xs"
+                    >
+                      Restart
+                    </button>
+                  </>
+                )}
+              </div>
+              <div className="mt-4 flex text-center items-center justify-center">
+                <p className="text-2xl font-bold mt-2 text-black ">
+                  {finalMsg}
+                </p>
+              </div>
+            </>
+          )}
+          {isPlayEnable && (
+            <>
+              <div className="Board mt-8 border-4">
+                {cards.map((active, index) => (
+                  <Card
+                    key={index}
+                    value={shuffledValues[index].value}
+                    url={shuffledValues[index].url}
+                    active={active}
+                    onClick={() => handleClick(index)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+        <div className="w-[40%] rounded-md border-4 border-white bg-[#fefae0] flex flex-col text-center p-4 space-y-4">
+          <Leaderboard />
+        </div>
       </div>
-      <div className="w-[40%] rounded-md border-4 border-white bg-[#fefae0] flex flex-col text-center p-4 space-y-4">
-        <Leaderboard />
-      </div>
-    </div>
+    
+    </>
   );
 };
 

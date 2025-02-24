@@ -148,7 +148,23 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         console.log("Calling array");
         const stats = await contract.getMonadStatsClub();
         const length = stats.length;
-        let leaderBoard = [];
+        let leaderBoard = [
+          { user: "0xA1B2C3D4E5", totalPoints: 980 },
+          { user: "0xF6G7H8I9J0", totalPoints: 750 },
+          { user: "0xK1L2M3N4O5", totalPoints: 910 },
+          { user: "0xP6Q7R8S9T0", totalPoints: 650 },
+          { user: "0xU1V2W3X4Y5", totalPoints: 870 },
+          { user: "0xZ6A7B8C9D0", totalPoints: 400 },
+          { user: "0xE1F2G3H4I5", totalPoints: 680 },
+          { user: "0xJ3K4L5M6N7", totalPoints: 920 },
+          { user: "0xO8P9Q0R1S2", totalPoints: 540 },
+          { user: "0xT3U4V5W6X7", totalPoints: 720 },
+          { user: "0xY8Z9A0B1C2", totalPoints: 990 },
+          { user: "0xD3E4F5G6H7", totalPoints: 460 },
+          { user: "0xI8J9K0L1M2", totalPoints: 810 },
+          { user: "0xN3O4P5Q6R7", totalPoints: 320 },
+          { user: "0xS8T9U0V1W2", totalPoints: 860 },
+        ];
         // we have to arrange in ascending order with totalPoints
         for (let i = 0; i < length; i++) {
           leaderBoard.push({

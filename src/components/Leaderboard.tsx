@@ -2,6 +2,7 @@ import React from "react";
 import numeral from "numeral";
 import { useDataContext } from "@/context/DataContext";
 import { useAccount } from "wagmi";
+
 const Leaderboard = () => {
   const { leaderBoardData } = useDataContext();
   const { address } = useAccount();
